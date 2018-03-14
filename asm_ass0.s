@@ -12,11 +12,16 @@ do_Str:
   mov rcx, rdi
 
   ; initialize answer
-	mov	qword[special_counter], -1
-	mov	qword[special_counter2], -1
+	mov	qword[special_counter], 0
+	mov	qword[special_counter2], 0
 
 	text_loop:
     mov bl, byte[rcx]
+
+    cmp bl, 40
+    je switch_paranthesis_1
+    cmp bl, 41
+    je switch_paranthesis_2
 
     ; Check if byte is special character: 0-64, 91-96, 123-127
     cmp bl, 65
@@ -53,8 +58,18 @@ do_Str:
     ; keep looping until it is null terminated
     jnz text_loop
 
+
   ; return an (returned values are in rax)
   mov     rax, qword[special_counter2]
   mov     rsp, rbp
   pop     rbp
   ret
+
+
+  switch_paranthesis_1:
+    mov byte[rcx], 60
+    jmp text_loop_increment
+
+  switch_paranthesis_2:
+    mov byte[rcx], 62
+    jmp text_loop_increment
